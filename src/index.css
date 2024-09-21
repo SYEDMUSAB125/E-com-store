@@ -12,3 +12,7 @@ body {
   background-color: #ffffff;
   color: #0c0c0c;
 }
+
+a.active {
+  font-weight: 600;
+}
