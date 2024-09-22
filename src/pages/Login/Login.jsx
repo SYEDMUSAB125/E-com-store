@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./login.module.css";
+
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -62,10 +62,15 @@ const AuthForm = () => {
           <button
             type="button"
             onClick={toggleForm}
-            className="w-full bg-black hover:bg-gray-800 text-white font-bold py-2 rounded focus:outline-none"
+            className="w-full bg-black hover:bg-primary text-white font-bold py-2 rounded focus:outline-none"
           >
             Login
           </button>
+          <div className="flex justify-center mt-4">
+                    <img src="/path/to/google-icon.png" alt="Google" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/facebook-icon.png" alt="Facebook" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/apple-icon.png" alt="Apple" className="w-8 h-8 mx-2 cursor-pointer" />
+                  </div>
           <p className="text-center text-sm mt-4">
             Don't have an account?{" "}
             <span
@@ -118,10 +123,15 @@ const AuthForm = () => {
           <button
             type="button"
             onClick={toggleForm}
-            className="w-full bg-black hover:bg-gray-800 text-white font-bold py-2 rounded focus:outline-none"
+            className="w-full bg-black hover:bg-primary text-white font-bold py-2 rounded focus:outline-none"
           >
             Sign Up
           </button>
+          <div className="flex justify-center mt-4">
+            <img src="/path/to/google-icon.png" alt="Google" className="w-8 h-8 mx-2 cursor-pointer" />
+            <img src="/path/to/facebook-icon.png" alt="Facebook" className="w-8 h-8 mx-2 cursor-pointer" />
+            <img src="/path/to/apple-icon.png" alt="Apple" className="w-8 h-8 mx-2 cursor-pointer" />
+          </div>
           <p className="text-center text-sm mt-4">
             Already have an account?{" "}
             <span
@@ -136,7 +146,7 @@ const AuthForm = () => {
     </form>
   </div>
 </div>
-
+//For Window Screen
       ) : (
         <div className="relative w-full max-w-[900px] h-[500px] bg-white border-2 border-black rounded-lg shadow-lg overflow-hidden flex">
           {/* Form Panel (Login/Signup) */}
@@ -172,10 +182,15 @@ const AuthForm = () => {
                   <button
                     type="button"
                     onClick={toggleForm}
-                    className="w-full bg-black hover:bg-gray-800 text-white font-bold py-2 rounded focus:outline-none"
+                    className="w-full bg-black hover:bg-primary text-white font-bold py-2 rounded focus:outline-none"
                   >
                     Login
                   </button>
+                  <div className="flex justify-center mt-4">
+                    <img src="/path/to/google-icon.png" alt="Google" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/facebook-icon.png" alt="Facebook" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/apple-icon.png" alt="Apple" className="w-8 h-8 mx-2 cursor-pointer" />
+                  </div>
                   <p className="text-center text-sm mt-4">
                     Don't have an account?{" "}
                     <span
@@ -227,10 +242,15 @@ const AuthForm = () => {
                   <button
                     type="button"
                     onClick={toggleForm}
-                    className="w-full bg-black hover:bg-gray-800 text-white font-bold py-2 rounded focus:outline-none"
+                    className="w-full bg-black hover:bg-primary text-white font-bold py-2 rounded focus:outline-none"
                   >
                     Sign Up
                   </button>
+                  <div className="flex justify-center mt-4">
+                    <img src="/path/to/google-icon.png" alt="Google" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/facebook-icon.png" alt="Facebook" className="w-8 h-8 mx-2 cursor-pointer" />
+                    <img src="/path/to/apple-icon.png" alt="Apple" className="w-8 h-8 mx-2 cursor-pointer" />
+                  </div>
                   <p className="text-center text-sm mt-4">
                     Already have an account?{" "}
                     <span

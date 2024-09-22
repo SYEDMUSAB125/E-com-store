@@ -4,8 +4,10 @@ import Navbar from "./components/Navbar/Navbar";
 import Bank_Details from "./components/Bank_Details/Bank_Details";
 import Home from "./pages/Home/Home";
 import Collections from "./pages/Collections/Collections";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from "./pages/Login/Login";
+import PaymentFailedNotification from "./components/Notifications/Payment_Failed";
+import PaymentSuccessfulNotification from "./components/Notifications/Payment_Succesful";
+import ContactUs from "./pages/Contactus/Contactus";
 
 const App = () => {
   return (
