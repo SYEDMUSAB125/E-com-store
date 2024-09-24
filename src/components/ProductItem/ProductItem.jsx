@@ -7,7 +7,7 @@ const ProductItem = ({ id, image, name, price, title }) => {
   const { currency } = useShop();
 
   return (
-    <Link to={`/product/${id}`} className="text-gray-700 cursor-pointer relative ">
+    <div className="text-gray-700 cursor-pointer relative ">
         <BiHeart className="absolute top-4 right-2 z-50 hover:text-red-500"/>
       <div className="overflow-hidden">
         <img
@@ -23,7 +23,7 @@ const ProductItem = ({ id, image, name, price, title }) => {
           {price}
         </p>
       </div>
-    </Link>
+    </div>
   );
 };
 
