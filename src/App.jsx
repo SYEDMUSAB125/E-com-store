@@ -10,7 +10,8 @@ import PaymentFailedNotification from "./components/Notifications/Payment_Failed
 import PaymentSuccessfulNotification from "./components/Notifications/Payment_Succesful";
 import ContactUs from "./pages/Contactus/Contactus";
 import Footer from "./components/Footer/Footer"; 
-
+import NewIn from "./pages/NewIn/NewIn";
+import ProductDetail from "./components/ProductItem/Product_Detail";
 const App = () => {
   return (
     <div className="main">
@@ -18,9 +19,11 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/newIn" element={<NewIn />} />
         <Route path="/collections" element={<Collections />} />
         <Route path="/login" element={<Login />} />
         <Route path="/bank_details" element={<Bank_Details />} />
+        <Route path="/product_detail" element={<ProductDetail />} />
       </Routes>
      
     </div>
