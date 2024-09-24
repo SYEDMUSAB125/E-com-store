@@ -64,7 +64,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import ProductItem from "../../components/ProductItem/ProductItem";
 import CollectionsFilters from "../../pages/Collections/CollectionsFilters";
 
@@ -119,15 +119,15 @@ const Collections = () => {
       {/* Main Content Area */}
       <div className="flex-1">
         {/* Add your existing collections and filters here */}
-   
+        {/* CollectionsFilters and other components can be added here */}
       </div>
 
       {/* Sidebar Cart */}
       {isCartVisible && (
-        <div className="w-[30%] fixed top-0 right-0 h-full bg-white shadow-lg p-6 z-50">
+        <div className="fixed top-20 right-0 h-[80vh] bg-white shadow-lg p-6 z-50 overflow-y-auto w-full sm:w-[50%] md:w-[30%]">
           {/* Close Button */}
           <button
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold"
             onClick={() => setIsCartVisible(false)}
           >
             ×
