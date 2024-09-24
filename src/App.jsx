@@ -12,6 +12,7 @@ import ContactUs from "./pages/Contactus/Contactus";
 import Footer from "./components/Footer/Footer"; 
 import NewIn from "./pages/NewIn/NewIn";
 import ProductDetail from "./components/ProductItem/Product_Detail";
+import CartModal from "./components/Your_Cart/CartModal";
 const App = () => {
   return (
     <div className="main">
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/bank_details" element={<Bank_Details />} />
         <Route path="/product_detail" element={<ProductDetail />} />
+        <Route path="/cart" element={<CartModal />} />
       </Routes>
      
     </div>
