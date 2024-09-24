@@ -9,7 +9,8 @@ const ProductDetail = () => {
   const { products } = useShop();
   const { productId } = useParams();
   const [productData, setProductData] = useState([]);
-  const [image,setImage] = useState('');
+  const [image, setImage] = useState("");
+  const [size, setSize] = useState("");
 
   const fetchProductData = async () => {
     products.map((item) => {
@@ -24,44 +25,33 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchProductData();
   }, [products]);
-  // console.log(productData.image.map(item => item))
 
   const [selectedColor, setSelectedColor] = useState("black");
   const [isFittingOpen, setIsFittingOpen] = useState(false);
   const [isFabricOpen, setIsFabricOpen] = useState(false);
   const [isShippingOpen, setIsShippingOpen] = useState(false);
 
-  // const similarProducts = products.filter(
-  //   (product) => product.category === category && product._id !== id
-  // );
-
-  // Demo image URLs (these can be replaced by your actual images)
-  const demoImages = [
-    "https://via.placeholder.com/200", // Replace with actual product image URLs
-    "https://via.placeholder.com/200",
-    "https://via.placeholder.com/200",
-  ];
 
   return (
     <div className="py-10 px-4 lg:px-[5vw]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Image Gallery */}
-        <div className="space-y-4">
-          <img
-            src={image}
-            className="w-full h-[400px] object-cover"
-          />
-          <div className="grid grid-cols-3 gap-2">
+        <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row product-image">
+          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
             {productData.image?.map((item, index) => (
               <img
                 src={item}
                 key={index}
-                className="w-full h-24 object-cover"
+                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
                 onClick={() => setImage(item)}
               />
             ))}
           </div>
+          <div className="w-full sm:w-[80%]">
+            <img src={image} className="w-full h-auto" />
+          </div>
         </div>
+
 
         {/* Main Product Details */}
         <div>
@@ -109,18 +99,21 @@ const ProductDetail = () => {
           </div>
 
           {/* Size selection */}
-          <div className="mt-4">
-            <label htmlFor="size" className="block text-sm font-medium">
-              Size
-            </label>
-            <select
-              id="size"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            >
-              <option>Small</option>
-              <option>Medium</option>
-              <option>Large</option>
-            </select>
+          <div className="flex flex-col gap-4 my-8">
+            <p>Select Size</p>
+            <div className="flex gap-2">
+              {productData.sizes?.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSize(item)}
+                  className={`border py-2 bg-gray-100 px-4 ${
+                    item == size ? "border-primary" : ""
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Add to cart button */}
