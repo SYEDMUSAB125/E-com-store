@@ -94,6 +94,10 @@ const Home = () => {
         </button>
       </div>
 
+      <div className='px-4 sm:px-[5vw] md:px-[7vw] 2xl:px-[9vw]'>
+
+
+
       {/* Products Section */}
       <div className="container flex flex-wrap justify-center items-center gap-8 my-[9rem] mx-auto">
         <div className="w-full lg:w-[80%] flex justify-between items-center -mb-4">
@@ -243,6 +247,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+            </div>
     </>
   );
 };

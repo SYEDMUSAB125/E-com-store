@@ -9,20 +9,22 @@ const Navbar = () => {
   const [cartModalVisible, setCartModalVisible] = useState(false); // State for Cart Modal
   const { setShowSearch } = useShop();
 
-  const toggleCartModal = () => {
-    setCartModalVisible(!cartModalVisible); // Toggle cart modal visibility
-  };
-
   return (
-    <div className="flex items-center justify-between py-5 font-medium">
+    <div className="flex items-center justify-between py-5 font-medium px-4 sm:px-[5vw] md:px-[7vw] 2xl:px-[9vw]">
       <Link to={"/"}>Logo</Link>
 
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700 capitalize">
-        <NavLink to={"/collections"} className={`flex flex-col items-center gap-1`}>
+        <NavLink
+          to={"/collections"}
+          className={`flex flex-col items-center gap-1`}
+        >
           <p>Collection</p>
         </NavLink>
 
-        <NavLink to={"/bank_details"} className={`flex flex-col items-center gap-1`}>
+        <NavLink
+          to={"/bank_details"}
+          className={`flex flex-col items-center gap-1`}
+        >
           <p>Bank</p>
         </NavLink>
 
@@ -38,7 +40,7 @@ const Navbar = () => {
           className="w-5 cursor-pointer"
           onClick={() => setShowSearch(true)}
         />
-        
+
         <div className="group relative">
           <img
             src={assets.profile_icon}
@@ -57,12 +59,11 @@ const Navbar = () => {
         </div>
 
         {/* Cart icon with modal trigger */}
-        <div className="relative cursor-pointer" onClick={toggleCartModal}>
-          <img
-            src={assets.cart_icon}
-            alt="cart"
-            className="w-5 min-w-5"
-          />
+        <div
+          className="relative cursor-pointer"
+          onClick={() => setCartModalVisible(true)}
+        >
+          <img src={assets.cart_icon} alt="cart" className="w-5 min-w-5" />
           <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black rounded-full text-white aspect-square text-[8px]">
             10
           </p>
@@ -77,10 +78,15 @@ const Navbar = () => {
         />
 
         <div
-          className={`${visible ? "w-full" : "w-0"} absolute top-0 right-0 bottom-0 transition-all overflow-hidden bg-white`}
+          className={`${
+            visible ? "w-full" : "w-0"
+          } absolute top-0 right-0 bottom-0 transition-all overflow-hidden bg-white`}
         >
           <div className="flex flex-col text-gray-600">
-            <div className="flex items-center gap-4 p-3" onClick={() => setVisible(false)}>
+            <div
+              className="flex items-center gap-4 p-3"
+              onClick={() => setVisible(false)}
+            >
               <img
                 src={assets.dropdown_icon}
                 alt="dropdown"
@@ -129,12 +135,10 @@ const Navbar = () => {
       </div>
 
       {cartModalVisible && (
-  <>
-    <CartModal onClose={toggleCartModal} cartData={[]} />
-    {/* Pass your cart data */}
-  </>
-)}
-
+        <div className="absolute">
+          <CartModal setCartModalVisible={setCartModalVisible} cartModalVisible={cartModalVisible} cartData={[]} />
+        </div>
+      )}
     </div>
   );
 };

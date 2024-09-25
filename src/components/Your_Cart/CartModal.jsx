@@ -1,4 +1,5 @@
 // import React from 'react';
+// import { FaTimes } from 'react-icons/fa';
 
 // function CartModal({ onClose, cartData }) {
 //   return (
@@ -8,7 +9,7 @@
 //           onClick={onClose}
 //           className="absolute top-4 right-4 text-gray-600 hover:text-black"
 //         >
-//           ✕
+//           <FaTimes/>
 //         </button>
 
 //         {cartData && cartData.length > 0 ? (
@@ -62,11 +63,9 @@
 
 // export default CartModal;
 
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import ProductItem from "../../components/ProductItem/ProductItem";
-import CollectionsFilters from "../../pages/Collections/CollectionsFilters";
+import { FaTimes } from "react-icons/fa";
 
 // Mock Product Data
 const mockProducts = [
@@ -99,17 +98,14 @@ const mockProducts = [
   },
 ];
 
-const Collections = () => {
+const Collections = ({ setCartModalVisible, cartModalVisible }) => {
   const [filterProducts, setFilterProducts] = useState([]);
-  const [isCartVisible, setIsCartVisible] = useState(true); // State to control sidebar visibility
   const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    // Set the mock products for display
     setFilterProducts(mockProducts);
   }, []);
-
-  // Handle product click to navigate to Product_Detail page
+  
   const handleProductClick = (item) => {
     navigate(`/product_detail`, { state: { product: item } });
   };
@@ -119,26 +115,23 @@ const Collections = () => {
       {/* Main Content Area */}
       <div className="flex-1">
         {/* Add your existing collections and filters here */}
-   
       </div>
 
       {/* Sidebar Cart */}
-      {isCartVisible && (
-        <div className="w-[30%] fixed top-0 right-0 h-full bg-white shadow-lg p-6 z-50">
+      {cartModalVisible && (
+        <div className="w-[30%] fixed top-0 right-0 h-full bg-white shadow-2xl shadow-primary p-6 z-[500]">
           {/* Close Button */}
           <button
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-            onClick={() => setIsCartVisible(false)}
+            className="absolute top-4 left-4 text-gray-500 hover:text-gray-800"
+            onClick={() => setCartModalVisible(false)}
           >
-            ×
+            <FaTimes />
           </button>
-          <h2 className="text-lg font-semibold mb-4">Your Cart</h2>
+
+          <h2 className="text-lg font-semibold my-4">Cart</h2>
           <div className="flex flex-col gap-4">
             {filterProducts.map((item) => (
-              <div
-                key={item._id}
-                className="flex items-center border-b pb-4"
-              >
+              <div key={item._id} className="flex items-center border-b pb-4">
                 {/* Product Image */}
                 <img
                   src={item.image}
@@ -154,18 +147,14 @@ const Collections = () => {
                   <div className="flex items-center justify-between mt-2">
                     {/* Quantity Selector */}
                     <div className="flex items-center">
-                      <button className="px-2 py-1 border rounded-l">
-                        -
-                      </button>
+                      <button className="px-2 py-1 border rounded-l">-</button>
                       <input
                         type="text"
                         value="1" // Use state here to manage quantity
                         className="w-8 text-center border-y"
                         readOnly
                       />
-                      <button className="px-2 py-1 border rounded-r">
-                        +
-                      </button>
+                      <button className="px-2 py-1 border rounded-r">+</button>
                     </div>
                     {/* Product Price */}
                     <p className="text-sm font-semibold">${item.price}</p>
@@ -183,7 +172,7 @@ const Collections = () => {
           </div>
           {/* Checkout Button */}
           <div className="mt-6">
-            <button className="w-full bg-green-600 text-white py-2 rounded">
+            <button className="w-full bg-primary text-white py-2 rounded">
               Check Out
             </button>
           </div>
