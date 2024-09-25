@@ -26,7 +26,7 @@ const ProductItem = ({ id, image, name, price, title }) => {
       <Link to={`/product_detail/${id}`} className="overflow-hidden">
         <img
           src={image[0]}
-          className="hover:scale-105 transition w-full ease-in-out bg-green-400"
+          className="hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[450px]"
           alt={name}
         />
       </Link>
@@ -42,7 +42,7 @@ const ProductItem = ({ id, image, name, price, title }) => {
 
         {/* Product Price */}
         <p className="text-sm font-semibold ">
-          {currency}
+          {currency}{" "}
           {price}
         </p>
       </div>

@@ -101,11 +101,12 @@ const mockProducts = [
 const Collections = ({ setCartModalVisible, cartModalVisible }) => {
   const [filterProducts, setFilterProducts] = useState([]);
   const navigate = useNavigate(); // Initialize useNavigate
+  
 
   useEffect(() => {
     setFilterProducts(mockProducts);
   }, []);
-  
+
   const handleProductClick = (item) => {
     navigate(`/product_detail`, { state: { product: item } });
   };
@@ -128,7 +129,7 @@ const Collections = ({ setCartModalVisible, cartModalVisible }) => {
             <FaTimes />
           </button>
 
-          <h2 className="text-lg font-semibold my-4">Cart</h2>
+          <h2 className="text-lg font-semibold my-4">Your Cart</h2>
           <div className="flex flex-col gap-4">
             {filterProducts.map((item) => (
               <div key={item._id} className="flex items-center border-b pb-4">

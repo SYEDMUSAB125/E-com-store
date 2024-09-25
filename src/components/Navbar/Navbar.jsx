@@ -10,7 +10,7 @@ const Navbar = () => {
   const { setShowSearch } = useShop();
 
   return (
-    <div className="flex items-center justify-between py-5 font-medium px-4 sm:px-[5vw] md:px-[7vw] 2xl:px-[9vw]">
+    <div className="flex items-center justify-between py-5 font-medium px-4 sm:px-[5vw] md:px-[7vw] 2xl:px-[9vw] z-[500]">
       <Link to={"/"}>Logo</Link>
 
       <ul className="hidden sm:flex gap-5 text-sm text-gray-700 capitalize">
@@ -49,10 +49,6 @@ const Navbar = () => {
           />
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4 z-50">
             <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-xl">
-              <p className="cursor-pointer hover:text-black">My Profile</p>
-              <Link to={"/orders"} className="cursor-pointer hover:text-black">
-                Orders
-              </Link>
               <p className="cursor-pointer hover:text-black">Logout</p>
             </div>
           </div>
@@ -65,7 +61,7 @@ const Navbar = () => {
         >
           <img src={assets.cart_icon} alt="cart" className="w-5 min-w-5" />
           <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black rounded-full text-white aspect-square text-[8px]">
-            10
+            {0}
           </p>
         </div>
 
@@ -79,7 +75,7 @@ const Navbar = () => {
 
         <div
           className={`${
-            visible ? "w-full" : "w-0"
+            visible ? "w-full h-screen" : "w-0"
           } absolute top-0 right-0 bottom-0 transition-all overflow-hidden bg-white`}
         >
           <div className="flex flex-col text-gray-600">
@@ -116,27 +112,17 @@ const Navbar = () => {
             >
               <p>Login</p>
             </NavLink>
-            <NavLink
-              onClick={() => setVisible(false)}
-              to={"/about"}
-              className="py-2 pl-6 border-b border-gray-300"
-            >
-              <p>About</p>
-            </NavLink>
-            <NavLink
-              onClick={() => setVisible(false)}
-              to={"/contact"}
-              className="py-2 pl-6 border-b border-gray-300"
-            >
-              <p>Contact</p>
-            </NavLink>
           </div>
         </div>
       </div>
 
       {cartModalVisible && (
         <div className="absolute">
-          <CartModal setCartModalVisible={setCartModalVisible} cartModalVisible={cartModalVisible} cartData={[]} />
+          <CartModal
+            setCartModalVisible={setCartModalVisible}
+            cartModalVisible={cartModalVisible}
+            cartData={[]}
+          />
         </div>
       )}
     </div>

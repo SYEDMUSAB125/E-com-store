@@ -1,36 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import ProductItem from "../../components/ProductItem/ProductItem";
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useShop } from "../../context/ShopContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetail = () => {
-  const { state } = useLocation();
-  // const { id, title, name, image, price, description, category } = state || {};
-  const { products } = useShop();
+  const { products, currency } = useShop();
   const { productId } = useParams();
   const [productData, setProductData] = useState([]);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
-
-  const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]);
-        return null;
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchProductData();
-  }, [products]);
-
-  const [selectedColor, setSelectedColor] = useState("black");
+  const [selectedColor, setSelectedColor] = useState("");
   const [isFittingOpen, setIsFittingOpen] = useState(false);
   const [isFabricOpen, setIsFabricOpen] = useState(false);
   const [isShippingOpen, setIsShippingOpen] = useState(false);
 
+  const fetchProductData = async () => {
+    try {
+      const product = await products.find((item) => item._id === productId);
+      if (product) {
+        setProductData(product);
+        setImage(product.image[0]);
+      } else {
+        console.error("Product not found");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  const productPrice = useMemo(() => {
+    return `${currency} ${productData.price}`;
+  }, [currency, productData.price]);
+
+  useEffect(() => {
+    if (products.length) {
+      fetchProductData();
+    }
+  }, [products]);
 
   return (
     <div className="py-10 px-4 lg:px-[5vw]">
@@ -52,87 +59,74 @@ const ProductDetail = () => {
           </div>
         </div>
 
-
         {/* Main Product Details */}
         <div>
           <h1 className="text-3xl font-bold">{productData.title}</h1>
           <p className="text-lg text-gray-500 mt-2">{productData.name}</p>
 
           {/* Price Section */}
-          <p className="text-2xl font-bold mt-4">${productData.price}</p>
-
-          {/* Color Selection */}
-          <div className="mt-4">
-            <p className="block text-sm font-medium">Color</p>
-            <div className="flex items-center space-x-4 mt-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="black"
-                  checked={selectedColor === "black"}
-                  onChange={() => setSelectedColor("black")}
-                  className="hidden"
-                />
-                <div className="w-6 h-6 bg-black rounded-full border-2 cursor-pointer"></div>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="white"
-                  checked={selectedColor === "white"}
-                  onChange={() => setSelectedColor("white")}
-                  className="hidden"
-                />
-                <div className="w-6 h-6 bg-white rounded-full border-2 cursor-pointer"></div>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="grey"
-                  checked={selectedColor === "grey"}
-                  onChange={() => setSelectedColor("grey")}
-                  className="hidden"
-                />
-                <div className="w-6 h-6 bg-gray-400 rounded-full border-2 cursor-pointer"></div>
-              </label>
+          <p className="text-2xl font-bold mt-4">{productPrice}</p>
+          {/* Select Colors */}
+          {productData.colors && (
+            <div className="flex flex-col gap-4 my-8">
+              <p>Select Color</p>
+              <div className="flex gap-3">
+                {productData.colors?.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedColor(item)}
+                    style={{ backgroundColor: item }}
+                    className={`outline outline-1 outline-offset-2 rounded-full h-5 w-5 cursor-pointer ${
+                      item === selectedColor
+                        ? "outline-primary outline-2 h-6 w-6"
+                        : ""
+                    }`}
+                  ></div>
+                ))}
+              </div>
+              {selectedColor && (
+                <p className="capitalize">Selected Color : {selectedColor}</p>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Size selection */}
-          <div className="flex flex-col gap-4 my-8">
-            <p>Select Size</p>
-            <div className="flex gap-2">
-              {productData.sizes?.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSize(item)}
-                  className={`border py-2 bg-gray-100 px-4 ${
-                    item == size ? "border-primary" : ""
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
+          {productData.sizes && (
+            <div className="flex flex-col gap-4 my-8">
+              <p>Select Size</p>
+              <div className="flex gap-2">
+                {productData.sizes?.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSize(item)}
+                    className={`border py-2 bg-gray-100 px-4 ${
+                      item == size ? "border-primary" : ""
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Add to cart button */}
           <div className="mt-6">
-            <button className="w-full py-3 bg-green-600 text-white font-bold rounded">
+            <button className="px-5 py-3 w-full bg-primary text-white font-bold rounded active:opacity-90">
               Add to Cart
             </button>
           </div>
 
           {/* Favorite/Compare Buttons */}
           <div className="flex gap-4 mt-4">
-            <button className="py-2 w-full bg-gray-200 rounded">
+            <button className="py-2 w-full bg-gray-300 rounded active:opacity-90">
               ❤ Add to Wishlist
             </button>
-            <button className="py-2 w-full bg-gray-200 rounded">
+            <button className="py-2 w-full bg-gray-300 rounded active:opacity-90">
               ⍰ Compare
             </button>
           </div>
-
+          <hr className="h-1 bg-primary border-none outline-none my-5 opacity-25 rounded-full" />
           {/* Shipping Info */}
           <div className="mt-6">
             <p className="text-sm">
@@ -195,6 +189,9 @@ const ProductDetail = () => {
           )}
         </div>
       </div>
+
+      {/* Toastify Container */}
+      <ToastContainer />
 
       {/* Similar Products Section */}
       <h2 className="text-2xl font-bold mt-12">You May Also Like</h2>
