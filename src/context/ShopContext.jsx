@@ -10,7 +10,6 @@ export const ShopContextProvider = ({ children }) => {
   const [showSearch, setShowSearch] = useState(false);
 
 
-
   const value = {
     currency,
     products,

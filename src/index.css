@@ -13,6 +13,11 @@ body {
   color: #0c0c0c;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .product-image ::-webkit-scrollbar{
   display: none;
 }
+

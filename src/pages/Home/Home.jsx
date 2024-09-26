@@ -9,7 +9,6 @@ import img1 from "../../assets/p_img2.png";
 import img2 from "../../assets/p_img2_1.png";
 import img3 from "../../assets/p_img2_2.png";
 import img4 from "../../assets/p_img2_3.png";
-import "./home.css";
 import BestSeller from "../../components/BestSeller/BestSeller";
 
 const Home = () => {
