@@ -13,6 +13,7 @@ import Footer from "./components/Footer/Footer";
 import NewIn from "./pages/NewIn/NewIn";
 import ProductDetail from "./components/ProductItem/Product_Detail";
 import CartModal from "./components/Your_Cart/CartModal";
+import WishList from "./pages/Wish_list/wish";
 const App = () => {
   return (
     <div className="main">
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/bank_details" element={<Bank_Details />} />
         <Route path="/product_detail" element={<ProductDetail />} />
         <Route path="/cart" element={<CartModal />} />
+        <Route path="/wishlist" element={<WishList />} />
       </Routes>
      
     </div>

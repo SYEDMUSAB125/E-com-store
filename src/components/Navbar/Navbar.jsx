@@ -21,6 +21,9 @@ const Navbar = () => {
         <NavLink to={"/collections"} className={`flex flex-col items-center gap-1`}>
           <p>Collection</p>
         </NavLink>
+        <NavLink to={"/wishlist"} className={`flex flex-col items-center gap-1`}>
+          <p>Wishlist</p>
+        </NavLink>
 
         <NavLink to={"/bank_details"} className={`flex flex-col items-center gap-1`}>
           <p>Bank</p>

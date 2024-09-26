@@ -1,29 +1,27 @@
 import React from "react";
-import { useShop } from "../../context/ShopContext";
-import { Link } from "react-router-dom";
-import { BiHeart } from "react-icons/bi";
 
-const ProductItem = ({ id, image, name, price, title }) => {
-  const { currency } = useShop();
-
+const ProductItem = ({ id, title, name, image, price, isInWishlist, onToggleWishlist, onClick }) => {
   return (
-    <Link to={`/product/${id}`} className="text-gray-700 cursor-pointer relative ">
-        <BiHeart className="absolute top-4 right-2 z-50 hover:text-red-500"/>
-      <div className="overflow-hidden">
-        <img
-          src={image[0]}
-          className="hover:scale-110 transition ease-in-out w-full"
-        />
+    <div className="product-item" onClick={onClick}>
+      <img src={image} alt={name} className="w-full h-auto" />
+      <div className="product-details">
+        <h2>{title}</h2>
+        <p>{name}</p>
+        <p>{price}</p>
+
+        {/* Heart Icon for Wishlist */}
+        <button onClick={(e) => { 
+          e.stopPropagation();  // Stop the click event from propagating to the parent
+          onToggleWishlist();   // Call the wishlist toggle function
+        }}>
+          {isInWishlist ? (
+            <span>&#10084; {/* Filled Heart for in-wishlist items */}</span>
+          ) : (
+            <span>&#9825; {/* Empty Heart for non-wishlist items */}</span>
+          )}
+        </button>
       </div>
-      <p className="text-sm font-semibold mt-2">{title}</p>
-      <div className="flex items-center justify-between">
-        <p className="text-sm py-2">{name}</p>
-        <p className="text-sm font-semibold ">
-          {currency}
-          {price}
-        </p>
-      </div>
-    </Link>
+    </div>
   );
 };
 
