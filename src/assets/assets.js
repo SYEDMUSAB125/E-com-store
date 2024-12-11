@@ -66,7 +66,7 @@ export const assets = {
 
 export const products = [
     {
-        _id: "aaaaa",
+        _id: "01",
         name: "Women Round Neck Cotton Top",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -80,7 +80,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaab",
+        _id: "02",
         name: "Men Round Neck Pure Cotton T-shirt",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -94,7 +94,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaac",
+        _id: "03",
         name: "Girls Round Neck Cotton Top",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -108,7 +108,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaad",
+        _id: "04",
         name: "Men Round Neck Pure Cotton T-shirt",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -122,7 +122,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaae",
+        _id: "05",
         name: "Women Round Neck Cotton Top",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -136,7 +136,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaaf",
+        _id: "06",
         name: "Girls Round Neck Cotton Top",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -150,7 +150,7 @@ export const products = [
         bestseller: true
     },
     {
-        _id: "aaaag",
+        _id: "07",
         name: "Men Tapered Fit Flat-Front Trousers",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
@@ -164,7 +164,7 @@ export const products = [
         bestseller: false
     },
     {
-        _id: "aaaah",
+        _id: "08",
         name: "Men Round Neck Pure Cotton T-shirt",
         title:"Round Neck",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",

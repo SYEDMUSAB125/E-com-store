@@ -3,14 +3,18 @@ import { useShop } from "../../context/ShopContext";
 import { BiHeart } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
-const ProductItem = ({ id, image, name, price, title }) => {
+const ProductItem = ({ id, name, title, price, image }) => {
   const { currency } = useShop();
 
   // Function to handle wishlist add
   const handleWishlistAdd = (e) => {
     e.stopPropagation(); // Prevent click event from propagating to parent
     console.log("Added to wishlist", id); // Add to your wishlist logic here
+    
   };
+
+  // Ensure image exists and has at least one item
+  const productImage = image || "/path/to/default-image.jpg"; // Fallback to a default image if not available
 
   return (
     <div className="text-gray-700 relative overflow-hidden">
@@ -25,7 +29,7 @@ const ProductItem = ({ id, image, name, price, title }) => {
       {/* Image Click -> Route to Product Detail */}
       <Link to={`/product_detail/${id}`} className="overflow-hidden">
         <img
-          src={image[0]}
+          src={productImage} // Use the product image or fallback
           className="hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[450px]"
           alt={name}
         />
@@ -36,14 +40,13 @@ const ProductItem = ({ id, image, name, price, title }) => {
 
       <div className="flex items-center justify-between">
         {/* Product Name (Click Handler) */}
-        <p className="text-sm py-2 cursor-pointer" >
+        <p className="text-sm py-2 cursor-pointer">
           {name}
         </p>
 
         {/* Product Price */}
         <p className="text-sm font-semibold ">
-          {currency}{" "}
-          {price}
+          {currency} {price}
         </p>
       </div>
     </div>

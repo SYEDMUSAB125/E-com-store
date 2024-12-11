@@ -5,16 +5,18 @@ import CollectionsFilters from "./CollectionsFilters";
 import { useNavigate } from "react-router-dom";
 
 const Collections = () => {
-  const { products } = useShop();
+  const { products } = useShop();  // Getting products from context
   const [filterProducts, setFilterProducts] = useState([]);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
+  // Effect to update filtered products whenever `products` changes
   useEffect(() => {
     setFilterProducts(products);
-  }, [products]); 
+     // Set products to filtered products (Add filtering logic if needed)
+  }, [products]);
 
   const handleProductClick = (item) => {
-    navigate(`/product_detail/${item._id}`);
+    navigate(`/product_detail/${item.id}`); // Navigate using the correct product id
   };
 
   return (
@@ -22,22 +24,26 @@ const Collections = () => {
       <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
         {/* Filter options */}
         <CollectionsFilters />
-        {/* Mapping the Filter */}
+
+        {/* Displaying the filtered products */}
         <div className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 gap-y-6 mt-10">
-            {filterProducts.map((item, index) => (
-              <div key={index} onClick={() => handleProductClick(item)}>
-                {" "}
-                {/* Click handler */}
-                <ProductItem
-                  id={item._id}
-                  title={item.title}
-                  name={item.name}
-                  image={item.image}
-                  price={item.price}
-                />
-              </div>
-            ))}
+            {filterProducts.length > 0 ? (
+              filterProducts.map((item) => (
+                <div key={item.id} onClick={() => handleProductClick(item)}>
+                  {/* Click handler */}
+                  <ProductItem
+                    id={item.id}  // Use product's id
+                    title={item.title}  // Display product title
+                    name={item.name}  // Display product name
+                    image={item.images}  // Pass product image URL
+                    price={item.price}  // Display product price
+                  />
+                </div>
+              ))
+            ) : (
+              <p>No products available</p>  // Fallback message when no products are found
+            )}
           </div>
         </div>
       </div>
