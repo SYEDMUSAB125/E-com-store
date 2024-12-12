@@ -184,15 +184,21 @@ const ManageProducts = () => {
                 required
                 className="p-2 border rounded-md shadow-sm w-full md:w-1/2"
               />
-              <input
-                type="text"
+              <select
                 name="category"
-                placeholder="Category"
                 value={newProduct.category}
                 onChange={handleInputChange}
                 required
                 className="p-2 border rounded-md shadow-sm w-full md:w-1/2"
-              />
+              >
+                <option value="" disabled>
+                  Select Category
+                </option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+              </select>
+
             </div>
 
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-2">

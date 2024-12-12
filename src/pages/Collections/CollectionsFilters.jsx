@@ -1,273 +1,186 @@
-import React, { useState } from "react";
-import {
-  FaGreaterThan,
-  FaMinus,
-  FaPlus,
-} from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 
-const CollectionsFilters = () => {
-  const [showSortFilter, setShowSortFilter] = useState();
-  const [showSizeFilter, setShowSizeFilter] = useState(false);
-  const [showFabricFilter, setShowFabricFilter] = useState(false);
-  const [showCollectionFilter, setShowCollectionFilter] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
+const CollectionsFilters = ({ activeFilters, setActiveFilters }) => {
+  const [selectedSizes, setSelectedSizes] = useState(activeFilters.sizes);
+  const [stockFilter, setStockFilter] = useState(activeFilters.stock);
+  const [bestsellerFilter, setBestsellerFilter] = useState(activeFilters.bestseller);
+  const [priceRange, setPriceRange] = useState(activeFilters.priceRange || null); // Default to null
+  const [selectedColor, setSelectedColor] = useState(activeFilters.color || "light");
+  const [showPriceFilter, setShowPriceFilter] = useState(false);
+
+  useEffect(() => {
+    setPriceRange(activeFilters.priceRange || null); // Set priceRange to null if not provided
+  }, [activeFilters.priceRange]);
+
+  const handleSizeChange = (size) => {
+    const updatedSizes = selectedSizes.includes(size)
+      ? selectedSizes.filter((s) => s !== size)
+      : [...selectedSizes, size];
+    setSelectedSizes(updatedSizes);
+    setActiveFilters((prev) => ({ ...prev, sizes: updatedSizes }));
+  };
+
+  const handleStockChange = (stock) => {
+    setStockFilter(stock);
+    setActiveFilters((prev) => ({ ...prev, stock }));
+  };
+
+  const handleBestsellerChange = (bestseller) => {
+    setBestsellerFilter(bestseller);
+    setActiveFilters((prev) => ({ ...prev, bestseller }));
+  };
+
+  const handlePriceChange = (event) => {
+    const value = event.target.value.split(',').map(Number);
+    setPriceRange(value);
+    setActiveFilters((prev) => ({ ...prev, priceRange: value }));
+  };
+
+  const handleColorChange = (event) => {
+    const value = event.target.value;
+    setSelectedColor(value);
+    setActiveFilters((prev) => ({ ...prev, color: value }));
+  };
+
+  // Clear price range filter
+  const clearPriceRange = () => {
+    setPriceRange(null);
+    setActiveFilters((prev) => ({ ...prev, priceRange: null }));
+  };
+
   return (
-    <div className="min-w-72">
-      <p
-        className="py-2 text-xl flex items-center cursor-pointer gap-2 font-bold"
-        onClick={() => setShowFilter((prev) => !prev)}
-      >
-        Filters
-        <FaGreaterThan
-          className={`${
-            showFilter ? "rotate-90" : ""
-          } h-3 sm:hidden transition`}
-        />
-      </p>
+    <div className="w-full sm:w-1/4">
+      <h3 className="text-lg font-bold mb-4">Filters</h3>
 
-      {/* Sort By */}
-      <div className={`mb-3 ${showFilter ? "" : "hidden"} sm:block`}>
-        <div
-          className={`capitalize text-sm font-medium text-whit p-2 ${
-            showSortFilter
-              ? "bg-white text-primary font-semibold border-2 border-gray-300"
-              : "bg-primary text-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            Sort By
-            <span
-              onClick={() => setShowSortFilter((prev) => !prev)}
-              className={`text-xs cursor-pointer ${
-                showSortFilter ? "text-black" : "text-white"
-              }`}
-            >
-              {showSortFilter ? <FaMinus /> : <FaPlus />}
-            </span>
+      {/* Sizes Filter */}
+      <div>
+        <h4 className="font-medium">Size</h4>
+        {["small", "medium", "large"].map((size) => (
+          <div key={size} className="flex items-center">
+            <input
+              type="checkbox"
+              id={`size-${size}`}
+              checked={selectedSizes.includes(size)}
+              onChange={() => handleSizeChange(size)}
+            />
+            <label htmlFor={`size-${size}`} className="ml-2">
+              {size.charAt(0).toUpperCase() + size.slice(1)}
+            </label>
           </div>
+        ))}
+      </div>
 
-          <div>
-            {showSortFilter && (
-              <div className="flex flex-col gap-2 text-sm font-normal text-gray-700 mt-4">
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Low-high"}
-                  />
-                  Relavnet
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Low-high"}
-                  />
-                  Low to High
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Women"}
-                  />
-                  high to Low
-                </p>
-              </div>
-            )}
-          </div>
+      {/* Stock Filter */}
+      <div className="mt-4">
+        <h4 className="font-medium">Stock</h4>
+        <div>
+          <input
+            type="radio"
+            id="stock-all"
+            name="stock"
+            checked={stockFilter === "all"}
+            onChange={() => handleStockChange("all")}
+          />
+          <label htmlFor="stock-all" className="ml-2">
+            All
+          </label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="stock-inStock"
+            name="stock"
+            checked={stockFilter === "inStock"}
+            onChange={() => handleStockChange("inStock")}
+          />
+          <label htmlFor="stock-inStock" className="ml-2">
+            In Stock
+          </label>
+        </div>
+        <div>
+          <input
+            type="radio"
+            id="stock-outOfStock"
+            name="stock"
+            checked={stockFilter === "outOfStock"}
+            onChange={() => handleStockChange("outOfStock")}
+          />
+          <label htmlFor="stock-outOfStock" className="ml-2">
+            Out of Stock
+          </label>
         </div>
       </div>
-      {/* Size */}
-      <div className={`mb-3 ${showFilter ? "" : "hidden"} sm:block`}>
-        <div
-          className={`capitalize text-sm font-medium text-whit p-2 ${
-            showSizeFilter
-              ? "bg-white text-primary font-semibold border-2 border-gray-300"
-              : "bg-primary text-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            Size
-            <span
-              onClick={() => setShowSizeFilter((prev) => !prev)}
-              className={`text-xs cursor-pointer ${
-                showSizeFilter ? "text-black" : "text-white"
-              }`}
-            >
-              {showSizeFilter ? <FaMinus /> : <FaPlus />}
-            </span>
-          </div>
 
-          <div>
-            {showSizeFilter && (
-              <div className="flex flex-col gap-2 text-sm font-normal text-gray-700 mt-4">
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"XS"}
-                  />
-                  X Small
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Small"}
-                  />
-                  Small
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Medium"}
-                  />
-                  Medium
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Large"}
-                  />
-                  Large
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"X Large"}
-                  />
-                  X Large
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"2XL"}
-                  />
-                  2Xl
-                </p>
-              </div>
-            )}
-          </div>
+      {/* Bestseller Filter */}
+      <div className="mt-4">
+        <h4 className="font-medium">Bestseller</h4>
+        <div>
+          <input
+            type="checkbox"
+            id="bestseller"
+            checked={bestsellerFilter}
+            onChange={(e) => handleBestsellerChange(e.target.checked)}
+          />
+          <label htmlFor="bestseller" className="ml-2">
+            Bestseller
+          </label>
         </div>
       </div>
-      {/* Collection */}
-      <div className={`mb-3 ${showFilter ? "" : "hidden"} sm:block`}>
-        <div
-          className={`capitalize text-sm font-medium text-whit p-2 ${
-            showCollectionFilter
-              ? "bg-white text-primary font-semibold border-2 border-gray-300"
-              : "bg-primary text-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            Collection
-            <span
-              onClick={() => setShowCollectionFilter((prev) => !prev)}
-              className={`text-xs cursor-pointer ${
-                showCollectionFilter ? "text-black" : "text-white"
-              }`}
-            >
-              {showCollectionFilter ? <FaMinus /> : <FaPlus />}
-            </span>
-          </div>
 
+      {/* Price Range Filter */}
+      <div className="mt-4">
+        <h4 className="font-medium">Price Range</h4>
+        {priceRange ? (
           <div>
-            {showCollectionFilter && (
-              <div className="flex flex-col gap-2 text-sm font-normal text-gray-700 mt-4">
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"In Stock"}
-                  />
-                  In Stock
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Women"}
-                  />
-                  Out Of Stock
-                </p>
-              </div>
-            )}
+            <input
+              type="range"
+              id="price-range-max"
+              min="100"
+              max="10000"
+              value={priceRange[1]}
+              onChange={(e) => handlePriceChange({ target: { value: `${priceRange[0]},${e.target.value}` } })}
+              className="w-full"
+            />
+            <div className="flex justify-between">
+              <span>100</span>
+              <span>{priceRange[1]}</span>
+              <span>10000</span>
+            </div>
+            <button
+              onClick={clearPriceRange}
+              className="text-red-500 mt-2"
+            >
+              <span className="text-xl">×</span> Clear Price Range
+            </button>
           </div>
-        </div>
+        ) : (
+          <button
+            onClick={() => setShowPriceFilter(true)}
+            className="bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark"
+          >
+            Select Price Range
+          </button>
+        )}
       </div>
-      {/* Fabric */}
-      <div className={`mb-3 ${showFilter ? "" : "hidden"} sm:block`}>
-        <div
-          className={`capitalize text-sm font-medium text-whit p-2 ${
-            showFabricFilter
-              ? "bg-white text-primary font-semibold border-2 border-gray-300"
-              : "bg-primary text-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            Fabric
-            <span
-              onClick={() => setShowFabricFilter((prev) => !prev)}
-              className={`text-xs cursor-pointer ${
-                showFabricFilter ? "text-black" : "text-white"
-              }`}
-            >
-              {showFabricFilter ? <FaMinus /> : <FaPlus />}
-            </span>
-          </div>
 
-          <div>
-            {showFabricFilter && (
-              <div className="flex flex-col gap-2 text-sm font-normal text-gray-700 mt-4">
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Cotton"}
-                  />
-                  Cotton
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Linen"}
-                  />
-                  Linen
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Wool"}
-                  />
-                  Wool
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Silk"}
-                  />
-                  Silk
-                </p>
-                <p className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    className="w-3 cursor-pointer"
-                    value={"Cashmere"}
-                  />
-                  Cashmere
-                </p>
-              </div>
-            )}
+      {/* Color Filter */}
+      <div className="mt-4">
+        <h4 className="font-medium">Color</h4>
+        {["dark", "light", "custom"].map((color) => (
+          <div key={color} className="flex items-center">
+            <input
+              type="radio"
+              id={`color-${color}`}
+              name="color"
+              value={color}
+              checked={selectedColor === color}
+              onChange={handleColorChange}
+            />
+            <label htmlFor={`color-${color}`} className="ml-2">
+              {color.charAt(0).toUpperCase() + color.slice(1)}
+            </label>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

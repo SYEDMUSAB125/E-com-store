@@ -17,6 +17,7 @@ export const ShopContextProvider = ({ children }) => {
         throw new Error('Failed to fetch products');
       }
       const data = await response.json();
+      console.log(data);
       setProducts(data); // Set the fetched products into the state
     } catch (error) {
       toast.error("Error fetching products: " + error.message);

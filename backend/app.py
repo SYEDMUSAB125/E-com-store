@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import psycopg2
 import urllib.parse as up
 from werkzeug.utils import secure_filename
@@ -8,7 +8,7 @@ from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
 # Set the path for image upload
 UPLOAD_FOLDER = 'assets/products'
@@ -37,6 +37,12 @@ def get_db_connection():
     )
     return connection
 
+# Serve static files
+@app.route('/assets/products/<path:filename>')
+def serve_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
 # Add product endpoint
 @app.route('/add_product', methods=['POST'])
 def add_product():
@@ -46,7 +52,7 @@ def add_product():
     image = request.files['image']
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image_path = f"{app.config['UPLOAD_FOLDER']}/{filename}".replace('\\', '/')# Use forward slashes for consistency
         image.save(image_path)
 
         data = request.form
@@ -59,23 +65,16 @@ def add_product():
         
         # Extract sizes from the form data (small, medium, large)
         sizes_data = {
-            "small": data.get("small") == "true",  # Compare string to "true"
+            "small": data.get("small") == "true",
             "medium": data.get("medium") == "true",
             "large": data.get("large") == "true"
         }
 
-        # Print the sizes data received from the frontend
-        print("Sizes data received:", sizes_data)
-
-        # Filter out sizes that are false
         sizes = [size for size, is_selected in sizes_data.items() if is_selected]
 
         colors = data.get("colors")  # Expect a comma-separated string
         quantity = data.get("quantity")
-        
-        # Set today's date if no date is provided
         date = data.get("date") or datetime.today().strftime('%Y-%m-%d')
-        
         bestseller = data.get("bestseller") == "true"
 
         conn = get_db_connection()
@@ -112,8 +111,7 @@ def get_products():
         if isinstance(sizes, str):  # If it's a string, parse it as JSON
             sizes = json.loads(sizes)
         
-        image_url = f"http://127.0.0.1:5000/{product[12]}"  # Assuming you're serving images from a public folder
-        print(image_url)
+        image_url = f"http://127.0.0.1:5000/{product[12].replace('\\', '/')}"
         products_list.append({
             "id": product[0],
             "name": product[1],
@@ -122,20 +120,18 @@ def get_products():
             "price": product[4],
             "category": product[5],
             "sub_category": product[6],
-            "sizes": sizes,  # Now this will be the correct format
+            "sizes": sizes,
             "colors": product[8].split(','),  # Convert comma-separated string to list
             "quantity": product[9],
             "date": product[10],
             "bestseller": product[11],
-            "images": image_url  # Send the image URL instead of the path
+            "images": image_url
         })
 
     cursor.close()
     conn.close()
 
     return jsonify(products_list)
-
-
 
 # Create products table
 def create_products_table():
@@ -150,8 +146,8 @@ def create_products_table():
             price DECIMAL(10, 2) NOT NULL,
             category VARCHAR(100),
             sub_category VARCHAR(100),
-            sizes JSONB,  -- Store sizes as JSON
-            colors TEXT,  -- Store colors as a comma-separated string
+            sizes JSONB,
+            colors TEXT,
             quantity INT DEFAULT 0,
             date DATE,
             bestseller BOOLEAN DEFAULT FALSE,
