@@ -10,11 +10,11 @@ const ProductItem = ({ id, name, title, price, image }) => {
   const handleWishlistAdd = (e) => {
     e.stopPropagation(); // Prevent click event from propagating to parent
     console.log("Added to wishlist", id); // Add to your wishlist logic here
-    
   };
 
   // Ensure image exists and has at least one item
   const productImage = image || "/path/to/default-image.jpg"; // Fallback to a default image if not available
+
 
   return (
     <div className="text-gray-700 relative overflow-hidden">
@@ -32,6 +32,7 @@ const ProductItem = ({ id, name, title, price, image }) => {
           src={productImage} // Use the product image or fallback
           className="hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[450px]"
           alt={name}
+        
         />
       </Link>
 
@@ -45,7 +46,7 @@ const ProductItem = ({ id, name, title, price, image }) => {
         </p>
 
         {/* Product Price */}
-        <p className="text-sm font-semibold ">
+        <p className="text-sm font-semibold">
           {currency} {price}
         </p>
       </div>

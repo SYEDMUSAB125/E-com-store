@@ -1,107 +1,136 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useShop } from "../../context/ShopContext";
+import { useShop } from "../../context/ShopContext"; // Use the ShopContext
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const ProductDetail = () => {
-  const { products, currency } = useShop();
-  const { productId } = useParams();
-  const [productData, setProductData] = useState([]);
-  const [image, setImage] = useState("");
-  const [size, setSize] = useState("");
+  const { products, currency, addToCart } = useShop(); // Use addToCart from context
+  const { productId } = useParams(); // Get the product ID from URL params
+  const [productData, setProductData] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
-  const [isFittingOpen, setIsFittingOpen] = useState(false);
-  const [isFabricOpen, setIsFabricOpen] = useState(false);
-  const [isShippingOpen, setIsShippingOpen] = useState(false);
+  const [size, setSize] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchProductData = async () => {
-    try {
-      const product = await products.find((item) => item._id === productId);
-      if (product) {
-        setProductData(product);
-        setImage(product.image[0]);
-      } else {
-        console.error("Product not found");
+    if (products && products.length) {
+      try {
+        const id = Number(productId);
+        const product = products.find((item) => item.id === id);
+        if (product) {
+          setProductData(product);
+        } else {
+          console.error(`Product with ID ${productId} not found.`);
+          setProductData(null);
+        }
+      } catch (error) {
+        console.error(`Error fetching product with ID ${productId}:`, error);
+        setProductData(null);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching product:", error);
     }
   };
 
   const productPrice = useMemo(() => {
-    return `${currency} ${productData.price}`;
-  }, [currency, productData.price]);
+    return `${currency} ${productData?.price}`;
+  }, [currency, productData?.price]);
 
   useEffect(() => {
-    if (products.length) {
+    if (products && products.length) {
       fetchProductData();
     }
-  }, [products]);
+  }, [products, productId]);
+
+  if (isLoading) {
+    return <div className="text-center py-10">Loading...</div>;
+  }
+
+  if (!productData) {
+    return <div className="text-center py-10">Product not found</div>;
+  }
+
+  const productImage = productData.images || "/path/to/default-image.jpg";
+
+  // Handle Add to Cart
+  const handleAddToCart = () => {
+    if (!selectedColor || !size) {
+      // Use SweetAlert2 instead of alert
+      Swal.fire({
+        icon: 'warning',
+        title: 'Oops...',
+        text: 'Please select a color and size before adding to the cart.',
+      });
+      return;
+    }
+    const cartItem = {
+      id: productData.id,
+      name: productData.name,
+      image: productImage,
+      price: productData.price,
+      color: selectedColor,
+      size: size,
+    };
+    addToCart(cartItem); // Add to cart using context
+
+    // SweetAlert2 success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart!',
+      text: `${productData.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <div className="py-10 px-4 lg:px-[5vw]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Product Image Gallery */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row product-image">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {productData.image?.map((item, index) => (
-              <img
-                src={item}
-                key={index}
-                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
-                onClick={() => setImage(item)}
-              />
-            ))}
+            <img
+              src={productImage}
+              className="hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[450px]"
+              alt={productData.name}
+            />
           </div>
           <div className="w-full sm:w-[80%]">
-            <img src={image} className="w-full h-auto" />
+            <img src={productImage} className="w-full h-auto" alt={productData.name} />
           </div>
         </div>
 
-        {/* Main Product Details */}
         <div>
           <h1 className="text-3xl font-bold">{productData.title}</h1>
           <p className="text-lg text-gray-500 mt-2">{productData.name}</p>
-
-          {/* Price Section */}
           <p className="text-2xl font-bold mt-4">{productPrice}</p>
-          {/* Select Colors */}
+
           {productData.colors && (
             <div className="flex flex-col gap-4 my-8">
               <p>Select Color</p>
               <div className="flex gap-3">
-                {productData.colors?.map((item, index) => (
+                {productData.colors.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => setSelectedColor(item)}
                     style={{ backgroundColor: item }}
                     className={`outline outline-1 outline-offset-2 rounded-full h-5 w-5 cursor-pointer ${
-                      item === selectedColor
-                        ? "outline-primary outline-2 h-6 w-6"
-                        : ""
+                      item === selectedColor ? "outline-primary  outline-2 h-5 w-5 bg-black" : ""
                     }`}
                   ></div>
                 ))}
               </div>
-              {selectedColor && (
-                <p className="capitalize">Selected Color : {selectedColor}</p>
-              )}
+              {selectedColor && <p className="capitalize">Selected Color: {selectedColor}</p>}
             </div>
           )}
 
-          {/* Size selection */}
           {productData.sizes && (
             <div className="flex flex-col gap-4 my-8">
               <p>Select Size</p>
               <div className="flex gap-2">
-                {productData.sizes?.map((item, index) => (
+                {productData.sizes.map((item, index) => (
                   <button
                     key={index}
                     onClick={() => setSize(item)}
-                    className={`border py-2 bg-gray-100 px-4 ${
-                      item == size ? "border-primary" : ""
-                    }`}
+                    className={`border py-2 bg-gray-100 px-4 ${item === size ? "bg-green-600" : ""}`}
                   >
                     {item}
                   </button>
@@ -110,95 +139,17 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* Add to cart button */}
           <div className="mt-6">
-            <button className="px-5 py-3 w-full bg-primary text-white font-bold rounded active:opacity-90">
+            <button
+              onClick={handleAddToCart} // Trigger Add to Cart
+              className="px-5 py-3 w-full bg-primary text-white font-bold rounded"
+            >
               Add to Cart
             </button>
           </div>
 
-          {/* Favorite/Compare Buttons */}
-          <div className="flex gap-4 mt-4">
-            <button className="py-2 w-full bg-gray-300 rounded active:opacity-90">
-              ❤ Add to Wishlist
-            </button>
-            <button className="py-2 w-full bg-gray-300 rounded active:opacity-90">
-              ⍰ Compare
-            </button>
-          </div>
-          <hr className="h-1 bg-primary border-none outline-none my-5 opacity-25 rounded-full" />
-          {/* Shipping Info */}
-          <div className="mt-6">
-            <p className="text-sm">
-              Free shipping on orders over $100. Easy returns.
-            </p>
-          </div>
+          <ToastContainer />
         </div>
-      </div>
-
-      {/* Additional Information (e.g., Fitting, Fabric, Shipping) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-        {/* Fitting Dropdown */}
-        <div className="border-b border-gray-300 pb-4">
-          <button
-            className="flex justify-between items-center w-full py-2 text-xl font-bold"
-            onClick={() => setIsFittingOpen(!isFittingOpen)}
-          >
-            Fitting
-            <span>{isFittingOpen ? "-" : "+"}</span>
-          </button>
-          {isFittingOpen && (
-            <p className="mt-2 text-gray-600">
-              This product fits true to size. See our size guide for more
-              details.
-            </p>
-          )}
-        </div>
-
-        {/* Fabric & Care Dropdown */}
-        <div className="border-b border-gray-300 pb-4">
-          <button
-            className="flex justify-between items-center w-full py-2 text-xl font-bold"
-            onClick={() => setIsFabricOpen(!isFabricOpen)}
-          >
-            Fabric & Care
-            <span>{isFabricOpen ? "-" : "+"}</span>
-          </button>
-          {isFabricOpen && (
-            <div className="mt-2 text-gray-600">
-              <p>Material: 75% Nylon, 25% Elastane</p>
-              <p>Care: Machine wash cold, tumble dry low.</p>
-            </div>
-          )}
-        </div>
-
-        {/* Shipping & Returns Dropdown */}
-        <div className="border-b border-gray-300 pb-4">
-          <button
-            className="flex justify-between items-center w-full py-2 text-xl font-bold"
-            onClick={() => setIsShippingOpen(!isShippingOpen)}
-          >
-            Shipping & Returns
-            <span>{isShippingOpen ? "-" : "+"}</span>
-          </button>
-          {isShippingOpen && (
-            <div className="mt-2 text-gray-600">
-              <p>Free returns within 30 days.</p>
-              <p>Standard shipping rates apply for orders under $100.</p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Toastify Container */}
-      <ToastContainer />
-
-      {/* Similar Products Section */}
-      <h2 className="text-2xl font-bold mt-12">You May Also Like</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {/* {similarProducts.map((product) => (
-          <ProductItem key={product._id} {...product} />
-        ))} */}
       </div>
     </div>
   );

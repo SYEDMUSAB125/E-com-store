@@ -11,7 +11,7 @@ const Collections = () => {
     sizes: [], // Array of selected sizes (e.g., ['small', 'medium'])
     stock: "all", // "inStock", "outOfStock", or "all"
     bestseller: false, // true or false
-    priceRange: [100, 1000], // Default price range [min, max]
+    priceRange: [100, 10000], // Default price range [min, max]
     sortBy: "", // Sorting option (e.g., "price-asc", "price-desc", etc.)
     collection: "", // Selected collection
     fabric: "", // Selected fabric
@@ -19,12 +19,26 @@ const Collections = () => {
 
   const navigate = useNavigate();
 
+  // Apply filters whenever products or active filters change
   useEffect(() => {
     applyFilters();
   }, [products, activeFilters]);
 
   const applyFilters = () => {
     let filtered = [...products];
+
+    // If no filters are selected, display all products
+    if (
+      !activeFilters.sizes.length &&
+      activeFilters.stock === "all" &&
+      !activeFilters.bestseller &&
+      !activeFilters.priceRange &&
+      !activeFilters.collection &&
+      !activeFilters.fabric
+    ) {
+      setFilterProducts(products);
+      return;
+    }
 
     // Filter by size
     if (activeFilters.sizes.length > 0) {
@@ -73,6 +87,7 @@ const Collections = () => {
       }
     }
 
+    // Set the filtered products
     setFilterProducts(filtered);
   };
 

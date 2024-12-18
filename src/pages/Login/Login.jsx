@@ -5,6 +5,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { FaFacebookSquare, FaApple } from "react-icons/fa";
+import { useUser } from "../../context/UserContext"; // Import the custom hook
 import { FcGoogle } from "react-icons/fc";
 import Swal from "sweetalert2";
 
@@ -17,13 +18,14 @@ const Login = ({ setUser, setIsSigningUp }) => {
   const [phonenumber, setPhonenumber] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
-
+  const { setUserData } = useUser(); // 
+  
   const toggleForm = () => {
     setIsLogin((prev) => !prev);
   };
-
+  
+  const navigate = useNavigate();
+  
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
   };
@@ -42,17 +44,18 @@ const Login = ({ setUser, setIsSigningUp }) => {
 
     if (isLogin) {
       try {
-        // Logging in
+        // Log in user
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Fetching user data from Firestore
+        // Fetch user data from Firestore
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const role = userData.role;
 
-          setUser({ uid: user.uid, email: user.email, role });
+          // Store user data in context and localStorage
+          setUserData({ uid: user.uid, email: user.email, role });
           Swal.fire(role, "You have been successfully logged in.", "success");
           localStorage.setItem("Role", role);
           navigate("/");  // Redirect to home page or dashboard
@@ -64,30 +67,17 @@ const Login = ({ setUser, setIsSigningUp }) => {
       }
     } else {
       try {
-        setIsSigningUp(true);
-
-        // Signing up
+        // Sign up user
         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
         const newUser = newUserCredential.user;
 
-        // Handling profile picture upload
-        // let profilePicUrl = "";
-        // if (profilePic) {
-        //   const profilePicRef = ref(storage, `profilePictures/${newUser.uid}`);
-        //   await uploadBytes(profilePicRef, profilePic);
-        
-        // }
-
-        // Saving user data in Firestore with default role as "user"
+        // Save user data in Firestore with default role as "user"
         await setDoc(doc(db, "users", newUser.uid), {
           username: username,
           phonenumber: phonenumber,
           email: email,
-          role: "user",  // Default role as "user"
-        
+          role: "user",  // Default role
         });
-
-        setIsSigningUp(false);
 
         Swal.fire({
           title: "Success!",
@@ -99,7 +89,6 @@ const Login = ({ setUser, setIsSigningUp }) => {
         toggleForm();
       } catch (error) {
         setError(error.message);
-        setIsSigningUp(false);
       }
     }
   };

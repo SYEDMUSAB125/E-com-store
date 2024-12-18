@@ -10,6 +10,8 @@ import img2 from "../../assets/p_img2_1.png";
 import img3 from "../../assets/p_img2_2.png";
 import img4 from "../../assets/p_img2_3.png";
 import BestSeller from "../../components/BestSeller/BestSeller";
+import ProductGrid from "../../components/ProductItem/product";
+import Newsletter from "../../pages/Home/newsletter";
 
 const Home = () => {
   const images = [BgImg, BgImg2, BgImg3];
@@ -109,72 +111,63 @@ const Home = () => {
           <h1 className="text-2xl font-semibold title-font text-black mb-4">
             New Arrivals
           </h1>
-
-          {/* Horizontal Scroll Container */}
-          <div className="relative w-full">
-            <div
-              className="flex overflow-x-scroll no-scrollbar space-x-4 py-4"
-              style={{ scrollBehavior: "smooth" }}
-            >
-              {newArrivalImages.map((img, index) => (
-                <div key={index} className="w-48 flex-shrink-0">
-                  <img
-                    src={img}
-                    alt={`New Arrival ${index + 1}`}
-                    className="w-full h-[300px] object-cover rounded-lg shadow-lg"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          <ProductGrid/>
+ 
         </div>
-
+        
         {/* New Sections */}
         <div className="container my-10">
-          <h2 className="text-3xl font-bold mb-8">Discover More</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <img
-                src={BgImg}
-                alt="Section 1"
-                className="w-full h-full object-cover rounded"
-              />
-              <a
-                href="#"
-                className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white font-bold text-2xl"
-              >
-                Explore Nature
-              </a>
-            </div>
-            <div className="relative">
-              <img
-                src={BgImg2}
-                alt="Section 2"
-                className="w-full h-full object-cover rounded"
-              />
-              <a
-                href="#"
-                className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white font-bold text-2xl"
-              >
-                Timeless Fashion
-              </a>
-            </div>
-            <div className="relative">
-              <img
-                src={BgImg3}
-                alt="Section 3"
-                className="w-full h-full object-cover rounded"
-              />
-              <a
-                href="#"
-                className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white font-bold text-2xl"
-              >
-                Sustainability First
-              </a>
-            </div>
-          </div>
+      <h2 className="text-3xl font-bold mb-8 text-center">Discover More</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Section 1 */}
+        <div className="relative group shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <img
+            src={BgImg}
+            alt="Section 1"
+            className="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-300"
+          />
+          <a
+            href="#"
+            className="absolute inset-0 bg-black bg-opacity-50 flex rounded-lg justify-center group-hover:scale-105  items-center text-white font-bold text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            Explore Nature
+          </a>
+        </div>
+
+        {/* Section 2 */}
+        <div className="relative group shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <img
+            src={BgImg2}
+            alt="Section 2"
+            className="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-300"
+          />
+          <a
+            href="#"
+            className="absolute inset-0 bg-black bg-opacity-50 flex rounded-lg justify-center group-hover:scale-105  items-center text-white font-bold text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            Timeless Fashion
+          </a>
+        </div>
+
+        {/* Section 3 */}
+        <div className="relative group shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <img
+            src={BgImg3}
+            alt="Section 3"
+            className="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-300"
+          />
+          <a
+            href="#"
+            className="absolute inset-0 bg-black bg-opacity-50 flex rounded-lg justify-center group-hover:scale-105  items-center text-white font-bold text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            Sustainability First
+          </a>
+        </div>
+        </div>
+    
         </div>
       </div>
+      <Newsletter/>
     </>
   );
 };
