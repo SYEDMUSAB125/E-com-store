@@ -111,7 +111,7 @@ const Collections = () => {
                     id={item.id}
                     title={item.title}
                     name={item.name}
-                    image={item.images} // Pass product image URL
+                    image={item.images[0]} // Pass the first image from the array
                     price={item.price}
                   />
                 </div>

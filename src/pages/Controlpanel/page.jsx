@@ -31,7 +31,7 @@ const Dashboard = () => {
       <AdminSidebar setActiveComponent={setActiveComponent} />
 
       {/* Main Content */}
-      <div className="flex-grow bg-gray-100 p-6">
+      <div className="flex-grow bg-gray-100 p-6 overflow-scroll">
         {renderComponent()} {/* Dynamically rendered component */}
       </div>
     </div>

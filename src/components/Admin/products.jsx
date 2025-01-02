@@ -18,9 +18,10 @@ const ManageProducts = () => {
     date: "",
     bestseller: false,
     quantity: 0, // Add quantity to track stock levels
-    image: null,  // This will hold the image file
+    images: [],  // Updated to hold multiple images
   });
   const [showForm, setShowForm] = useState(false); // state to toggle form visibility
+  const [imageInputs, setImageInputs] = useState([null]); // to track image input fields
 
   // Fetch products from the Flask API
   useEffect(() => {
@@ -33,7 +34,6 @@ const ManageProducts = () => {
     fetchProducts();
   }, []);
   
-
   const handleColorChange = (e, color) => {
     setNewProduct((prevProduct) => {
       let updatedColors = [...prevProduct.colors];
@@ -67,46 +67,54 @@ const ManageProducts = () => {
     }));
   };
 
-  // Handle file input change
-  const handleFileChange = (e) => {
-    const { files } = e.target;
+  // Handle multiple image file selection
+  const handleFileChange = (e, index) => {
+    const files = e.target.files;
+    const newImages = [...newProduct.images];
+    newImages[index] = files[0]; // Replace the image at the corresponding index
     setNewProduct((prevProduct) => ({
       ...prevProduct,
-      image: files[0], // Store the file
+      images: newImages,
     }));
+  };
+
+  // Add new file input
+  const handleAddImageInput = () => {
+    setImageInputs((prev) => [...prev, null]); // Add a new input
   };
 
   const handleAddProduct = (e) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
-
-    // Append all form fields except "image" and "sizes"
+  
+    // Append all fields except images
     Object.keys(newProduct).forEach((key) => {
-      if (key !== "image" && key !== "sizes") {
+      if (key !== "images" && key !== "sizes") {
         formData.append(key, newProduct[key]);
       }
     });
-
-    // Append sizes (convert the boolean values to strings)
+  
+    // Append sizes
     Object.keys(newProduct.sizes).forEach((size) => {
       formData.append(size, newProduct.sizes[size].toString());
     });
-
-    // Append the image file
-    formData.append("image", newProduct.image);
-
-    console.log("Adding product:", newProduct);
-
+  
+    // Append images
+    newProduct.images.forEach((image, index) => {
+      if (image) {
+        formData.append(`images[]`, image); // Send as 'images[]'
+      }
+    });
+  
     fetch("http://127.0.0.1:5000/add_product", {
       method: "POST",
-      body: formData, // Send formData instead of JSON
+      body: formData, // Ensure the body is FormData
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Server response:", data);
-
         alert(data.message);
+        // Reset form data after successful submission
         setNewProduct({
           name: "",
           title: "",
@@ -119,7 +127,7 @@ const ManageProducts = () => {
           date: "",
           bestseller: false,
           quantity: 0,
-          image: null,
+          images: [],
         });
         setShowForm(false);
         fetch("http://127.0.0.1:5000/get_products")
@@ -128,7 +136,7 @@ const ManageProducts = () => {
       })
       .catch((error) => console.error("Error adding product:", error));
   };
-
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-semibold mb-4">Manage Products</h1>
@@ -310,14 +318,31 @@ const ManageProducts = () => {
               />
             </div>
 
-            {/* Image upload input */}
-            <input
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-              required
-              className="p-2 border rounded-md shadow-sm w-full"
-            />
+ {/* Image Upload Inputs */}
+<label className="block text-sm font-semibold">Product Images:</label>
+<div className="flex flex-wrap gap-2">
+  {imageInputs.map((_, index) => (
+    <div key={index} className="flex items-center space-x-2">
+      <input
+        type="file"
+        name="images[]"
+        onChange={(e) => handleFileChange(e, index)}
+        className="p-2 border rounded-md shadow-sm "
+      />
+      {index === imageInputs.length - 1 && (
+        <button
+          type="button"
+          onClick={handleAddImageInput}
+          className="text-xl text-black w-10 h-10 bg-slate-300"
+        >
+          +
+        </button>
+      )}
+    </div>
+  ))}
+</div>
+
+
 
             <button
               type="submit"

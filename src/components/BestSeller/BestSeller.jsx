@@ -28,21 +28,21 @@ const BestSeller = () => {
       </div>
       {/* Render Bestseller Products */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 gap-y-6">
-      {bestsellers.length > 0 ? (
-            bestsellers.map((item) => (
-              <div key={item.id} onClick={() => handleProductClick(item)}>
-                <ProductItem
-                  id={item.id}
-                  title={item.title}
-                  name={item.name}
-                  image={item.images} // Pass product image URL
-                  price={item.price}
-                />
-              </div>
-            ))
-          ) : (
-            <p>No bestsellers available</p>
-          )}
+        {bestsellers.length > 0 ? (
+          bestsellers.map((item) => (
+            <div key={item.id} onClick={() => handleProductClick(item)}>
+              <ProductItem
+                id={item.id}
+                title={item.title}
+                name={item.name}
+                image={item.images[0]} // Display the first image from the images array
+                price={item.price}
+              />
+            </div>
+          ))
+        ) : (
+          <p>No bestsellers available</p>
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [size, setSize] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [mainImage, setMainImage] = useState(""); // State for the main image
 
   const fetchProductData = async () => {
     if (products && products.length) {
@@ -20,6 +21,7 @@ const ProductDetail = () => {
         const product = products.find((item) => item.id === id);
         if (product) {
           setProductData(product);
+          setMainImage(product.images?.[0] || "/path/to/default-image.jpg"); // Set the first image as default
         } else {
           console.error(`Product with ID ${productId} not found.`);
           setProductData(null);
@@ -51,7 +53,7 @@ const ProductDetail = () => {
     return <div className="text-center py-10">Product not found</div>;
   }
 
-  const productImage = productData.images || "/path/to/default-image.jpg";
+  const productImages = productData.images || ["/path/to/default-image.jpg"]; // Fallback if no images available
 
   // Handle Add to Cart
   const handleAddToCart = () => {
@@ -67,7 +69,7 @@ const ProductDetail = () => {
     const cartItem = {
       id: productData.id,
       name: productData.name,
-      image: productImage,
+      image: mainImage,
       price: productData.price,
       color: selectedColor,
       size: size,
@@ -86,15 +88,26 @@ const ProductDetail = () => {
     <div className="py-10 px-4 lg:px-[5vw]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row product-image">
+          {/* Image Thumbnails */}
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
+            {productImages.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                className="cursor-pointer hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[100px]"
+                alt={`Thumbnail ${index}`}
+                onClick={() => setMainImage(image)} // Update main image on click
+              />
+            ))}
+          </div>
+
+          {/* Main Product Image */}
+          <div className="w-full sm:w-[80%]">
             <img
-              src={productImage}
-              className="hover:scale-105 transition w-full ease-in-out bg-green-400 max-h-[450px]"
+              src={mainImage}
+              className="w-full h-auto"
               alt={productData.name}
             />
-          </div>
-          <div className="w-full sm:w-[80%]">
-            <img src={productImage} className="w-full h-auto" alt={productData.name} />
           </div>
         </div>
 

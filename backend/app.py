@@ -3,9 +3,10 @@ from flask import Flask, request, jsonify, send_from_directory
 import psycopg2
 import urllib.parse as up
 from werkzeug.utils import secure_filename
-import json  # For handling sizes as JSON
+import json
 from datetime import datetime
 from flask_cors import CORS
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -40,62 +41,69 @@ def get_db_connection():
 # Serve static files
 @app.route('/assets/products/<path:filename>')
 def serve_file(filename):
+    # Disable logging for this route
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)  # Only show errors, suppress info level logs
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 # Add product endpoint
 @app.route('/add_product', methods=['POST'])
 def add_product():
-    if 'image' not in request.files:
-        return jsonify({"message": "No image file part"}), 400
+    uploaded_images = []
+    if 'images[]' not in request.files:
+        return jsonify({"message": "No image files part"}), 400
 
-    image = request.files['image']
-    if image and allowed_file(image.filename):
-        filename = secure_filename(image.filename)
-        image_path = f"{app.config['UPLOAD_FOLDER']}/{filename}".replace('\\', '/')# Use forward slashes for consistency
-        image.save(image_path)
+    images = request.files.getlist('images[]')
+    for image in images:
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename).replace('\\', '/')
+            image.save(image_path)
+            uploaded_images.append(image_path)  # Store paths, but don't print
 
-        data = request.form
-        name = data.get("name")
-        title = data.get("title")
-        description = data.get("description")
-        price = data.get("price")
-        category = data.get("category")
-        sub_category = data.get("subCategory")
-        
-        # Extract sizes from the form data (small, medium, large)
-        sizes_data = {
-            "small": data.get("small") == "true",
-            "medium": data.get("medium") == "true",
-            "large": data.get("large") == "true"
-        }
+    if not uploaded_images:
+        return jsonify({"message": "No valid image files uploaded"}), 400
 
-        sizes = [size for size, is_selected in sizes_data.items() if is_selected]
+    data = request.form
+    name = data.get("name")
+    title = data.get("title")
+    description = data.get("description")
+    price = data.get("price")
+    category = data.get("category")
+    sub_category = data.get("subCategory")
+    
+    # Sizes extraction
+    sizes_data = {
+        "small": data.get("small") == "true",
+        "medium": data.get("medium") == "true",
+        "large": data.get("large") == "true"
+    }
+    sizes = [size for size, is_selected in sizes_data.items() if is_selected]
 
-        colors = data.get("colors")  # Expect a comma-separated string
-        quantity = data.get("quantity")
-        date = data.get("date") or datetime.today().strftime('%Y-%m-%d')
-        bestseller = data.get("bestseller") == "true"
+    colors = data.get("colors")  # Expect a comma-separated string
+    quantity = data.get("quantity")
+    date = data.get("date") or datetime.today().strftime('%Y-%m-%d')
+    bestseller = data.get("bestseller") == "true"
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-        cursor.execute(
-            """
-            INSERT INTO products 
-            (name, title, description, price, category, sub_category, sizes, colors, quantity, date, bestseller, images)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            (name, title, description, price, category, sub_category, json.dumps(sizes), colors, quantity, date, bestseller, image_path)
-        )
+    cursor.execute(
+        """
+        INSERT INTO products 
+        (name, title, description, price, category, sub_category, sizes, colors, quantity, date, bestseller, images)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+        (name, title, description, price, category, sub_category, json.dumps(sizes), colors, quantity, date, bestseller, json.dumps(uploaded_images))
+    )
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-        return jsonify({"message": "Product added successfully!"}), 201
+    return jsonify({"message": "Product added successfully!"}), 201
 
-    return jsonify({"message": "Invalid file format"}), 400
 
 @app.route('/get_products', methods=['GET'])
 def get_products():
@@ -111,7 +119,9 @@ def get_products():
         if isinstance(sizes, str):  # If it's a string, parse it as JSON
             sizes = json.loads(sizes)
         
-        image_url = f"http://127.0.0.1:5000/{product[12].replace('\\', '/')}"
+        images = json.loads(product[12])
+        image_urls = [f"http://127.0.0.1:5000/{img.replace('\\', '/')}" for img in images]
+
         products_list.append({
             "id": product[0],
             "name": product[1],
@@ -121,17 +131,18 @@ def get_products():
             "category": product[5],
             "sub_category": product[6],
             "sizes": sizes,
-            "colors": product[8].split(','),  # Convert comma-separated string to list
+            "colors": product[8].split(','),
             "quantity": product[9],
             "date": product[10],
             "bestseller": product[11],
-            "images": image_url
+            "images": image_urls
         })
 
     cursor.close()
     conn.close()
 
     return jsonify(products_list)
+
 
 # Create products table
 def create_products_table():
@@ -151,7 +162,7 @@ def create_products_table():
             quantity INT DEFAULT 0,
             date DATE,
             bestseller BOOLEAN DEFAULT FALSE,
-            images TEXT
+            images JSONB
         );
     """)
     conn.commit()
